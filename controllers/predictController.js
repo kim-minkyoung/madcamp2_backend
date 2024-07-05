@@ -2,6 +2,19 @@ const tf = require("@tensorflow/tfjs-node");
 const fs = require("fs");
 const path = require("path");
 
+// 모델 로드 함수
+async function loadModel(modelJsonPath, modelWeightsPath) {
+  try {
+    const model = await tf.loadLayersModel(`file://${modelJsonPath}`);
+    await model.loadWeights(`file://${modelWeightsPath}`);
+    console.log("모델 로드 완료");
+    return model;
+  } catch (error) {
+    console.error(`모델을 로드하는 동안 오류가 발생했습니다: ${error.message}`);
+    throw error;
+  }
+}
+
 // 이미지 데이터 로드 함수
 function loadImageData(imagePath) {
   try {
@@ -19,17 +32,6 @@ function loadImageData(imagePath) {
     console.error(
       `이미지 데이터를 로드하는 동안 오류가 발생했습니다: ${error.message}`
     );
-    throw error;
-  }
-}
-
-// TensorFlow Lite 모델 로드 함수
-async function loadModel(modelPath) {
-  try {
-    const model = await tf.loadGraphModel(`file://${modelPath}`);
-    return model;
-  } catch (error) {
-    console.error(`모델을 로드하는 동안 오류가 발생했습니다: ${error.message}`);
     throw error;
   }
 }
@@ -57,10 +59,12 @@ async function handlePrediction(req, res, next) {
         .json({ error: "이미지 경로가 요청 바디에 포함되지 않았습니다." });
     }
 
-    const modelPath = path.join(__dirname, "../models/model.tflite");
-    console.log(`모델 경로: ${modelPath}`);
+    const modelJsonPath = path.join(__dirname, "../models/model.json");
+    const modelWeightsPath = path.join(__dirname, "../models/model.weights");
+    console.log(`모델 JSON 경로: ${modelJsonPath}`);
+    console.log(`모델 Weights 경로: ${modelWeightsPath}`);
 
-    const model = await loadModel(modelPath);
+    const model = await loadModel(modelJsonPath, modelWeightsPath);
     console.log("모델 로드 완료");
 
     const imageData = loadImageData(imagePath);
