@@ -1,60 +1,85 @@
-swagger: "2.0"
+openapi: 3.0.0
 info:
-  version: 1.0.0
-  title: User API
-  description: APIs for managing users
-
+  title: "API 문서"
+  version: "1.0.0"
+  description: "API 문서 설명"
+servers:
+  - url: "http://localhost:3000"
 paths:
   /users/checkEmail:
     post:
+      summary: "이메일 중복 여부 확인"
       tags:
-        - User
-      summary: Check if email is already registered
-      description: Endpoint to check if the provided email address is already registered in the system.
-      parameters:
-        - name: body
-          in: body
-          description: Email address to check
-          required: true
-          schema:
-            type: object
-            properties:
-              email:
-                type: string
+        - "Users"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                email:
+                  type: "string"
+                  description: "확인할 이메일"
       responses:
         "200":
-          description: Email is available (not registered)
-        "409":
-          description: Email is already registered
+          description: "성공적으로 이메일 중복 여부를 확인"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  isExistingUser:
+                    type: "boolean"
+                    description: "사용자가 존재하는지 여부"
+                  nickname:
+                    type: "string"
+                    description: "사용자 닉네임"
+                  profileImage:
+                    type: "string"
+                    description: "사용자 프로필 이미지 URL"
+                  userId:
+                    type: "string"
+                    description: "사용자 ID"
         "500":
-          description: Internal server error
+          description: "서버 오류"
 
   /users/{userId}:
     get:
+      summary: "사용자 정보 조회"
       tags:
-        - User
-      summary: Get user by ID
-      description: Retrieve user information based on the provided user ID.
+        - "Users"
       parameters:
-        - name: userId
-          in: path
-          description: ID of the user to fetch
+        - name: "userId"
+          in: "path"
           required: true
-          type: string
+          schema:
+            type: "string"
+          description: "조회할 사용자 ID"
       responses:
         "200":
-          description: User found
-          schema:
-            type: object
-            properties:
-              _id:
-                type: string
-              email:
-                type: string
-              name:
-                type: string
-              # Add more properties as needed
+          description: "성공적으로 사용자 정보를 조회"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
         "404":
-          description: User not found
+          description: "사용자를 찾을 수 없음"
         "500":
-          description: Internal server error
+          description: "서버 오류"
+
+components:
+  schemas:
+    User:
+      type: "object"
+      properties:
+        _id:
+          type: "string"
+        email:
+          type: "string"
+        nickname:
+          type: "string"
+        profileImage:
+          type: "string"
+      required:
+        - _id
