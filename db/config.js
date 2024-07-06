@@ -1,10 +1,8 @@
 // db/config.js
-const { MongoClient } = require("mongodb");
-
 const mongoose = require("mongoose");
+require("dotenv").config();
 
-const url =
-  "mongodb+srv://decomin02:12341234@madcamp2cluster.jca7vne.mongodb.net/?retryWrites=true&w=majority&appName=madcamp2Cluster";
+const url = process.env.DB_URL;
 const dbName = "myDatabase";
 
 let client;
