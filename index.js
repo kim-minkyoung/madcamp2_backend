@@ -1,18 +1,21 @@
-const { MongoClient } = require("mongodb");
+// index.js
+const connectDB = require("./db/config");
+const command = require("./command"); // 예시로 command 파일을 가져오는 것으로 가정
 
-const url =
-  "mongodb+srv://decomin02:12341234@madcamp2cluster.jca7vne.mongodb.net/?retryWrites=true&w=majority&appName=madcamp2Cluster"; // MongoDB 서버 주소
-const dbName = "myDatabase"; // 데이터베이스 이름
+const startServer = async () => {
+  try {
+    const mongoose = await connectDB();
+    console.log("Connected to MongoDB!");
 
-let client;
+    // MongoDB 연결이 설정되었으므로 command 실행 가능
+    await command.execute(client, message, args); // 예시로 command.execute()를 호출하는 것으로 가정
 
-async function connect() {
-  if (!client) {
-    client = new MongoClient(url);
-    await client.connect();
-    console.log("MongoDB에 성공적으로 연결되었습니다!");
+    mongoose.connection.close();
+    console.log("MongoDB connection closed");
+  } catch (error) {
+    console.error("Error connecting to MongoDB:", error);
+    process.exit(1); // 연결 실패 시 프로세스 종료
   }
-  return client.db(dbName);
-}
+};
 
-module.exports = connect;
+startServer();

@@ -1,18 +1,26 @@
+// db/config.js
 const { MongoClient } = require("mongodb");
 
+const mongoose = require("mongoose");
+
 const url =
-  "mongodb+srv://decomin02:12341234@madcamp2cluster.jca7vne.mongodb.net/?retryWrites=true&w=majority"; // MongoDB 서버 주소
-const dbName = "myDatabase"; // 데이터베이스 이름
+  "mongodb+srv://decomin02:12341234@madcamp2cluster.jca7vne.mongodb.net/?retryWrites=true&w=majority&appName=madcamp2Cluster";
+const dbName = "myDatabase";
 
 let client;
 
-async function connect() {
-  if (!client) {
-    client = new MongoClient(url);
-    await client.connect();
-    console.log("MongoDB에 성공적으로 연결되었습니다!");
+const connectDB = async () => {
+  try {
+    await mongoose.connect(url, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log("MongoDB Connected");
+    return mongoose.connection;
+  } catch (error) {
+    console.error("MongoDB Connection Error:", error);
+    throw error;
   }
-  return client.db(dbName);
-}
+};
 
-module.exports = connect;
+module.exports = connectDB;
