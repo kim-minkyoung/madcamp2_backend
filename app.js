@@ -7,10 +7,10 @@ var connectMongoDB = require("./db/config");
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 
-var indexRouter = require("./routes/index");
-var usersRouter = require("./routes/users");
-var retrofitRouter = require("./routes/retrofit");
-var predictRouter = require("./routes/predict");
+var indexRouter = require("./routes/indexRouter");
+var usersRouter = require("./routes/usersRouter");
+var retrofitRouter = require("./routes/retrofitRouter");
+var predictRouter = require("./routes/predictRouter");
 
 var app = express();
 const PORT = 3000;

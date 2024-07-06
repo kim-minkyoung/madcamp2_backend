@@ -8,9 +8,6 @@ exports.checkUserExistence = async (email) => {
     const user = await User.findOne({ email });
     if (user) {
       console.log("true");
-      return true;
-    } else {
-      return false;
     }
     return !!user; // 사용자가 존재하면 true, 그렇지 않으면 false 반환
   } catch (error) {
