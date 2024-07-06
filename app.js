@@ -3,7 +3,9 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-var connectMongoDB = require("./db/config"); // MongoDB 연결 모듈 추가
+var connectMongoDB = require("./db/config");
+const swaggerJsdoc = require("swagger-jsdoc");
+const swaggerUi = require("swagger-ui-express");
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
@@ -12,6 +14,9 @@ var predictRouter = require("./routes/predict");
 
 var app = express();
 const PORT = 3000;
+
+// Swagger 정의 가져오기
+const swaggerDefinition = require("./swaggerDef");
 
 // MongoDB 연결 설정
 connectMongoDB()
@@ -25,6 +30,18 @@ connectMongoDB()
     app.use(express.urlencoded({ extended: false }));
     app.use(cookieParser());
     app.use(express.static(path.join(__dirname, "public")));
+
+    // Swagger-jsdoc 옵션 설정
+    const options = {
+      swaggerDefinition,
+      apis: ["./routes/*.js"], // API 경로 설정 (실제 API 파일들의 경로)
+    };
+
+    // Swagger-jsdoc 초기화
+    const swaggerSpec = swaggerJsdoc(options);
+
+    // Swagger UI 설정
+    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
     app.use("/", indexRouter);
     app.use("/users", usersRouter);

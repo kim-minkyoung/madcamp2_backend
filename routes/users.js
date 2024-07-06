@@ -3,40 +3,62 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
+const userController = require("../controllers/userController");
 
-// 사용자 전체 조회
-router.get("/", async (req, res, next) => {
+// 이메일 중복 여부 확인
+router.post("/checkEmail", userController.checkEmail);
+
+// 사용자 정보 조회
+router.get("/:userId", async (req, res) => {
   try {
-    const users = await User.find();
-    res.json(users);
-  } catch (err) {
-    console.error("Error executing query:", err);
-    next(err);
+    const user = await User.findById(req.params.userId);
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    res.json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error fetching user");
   }
 });
 
-// POST 요청을 처리하는 라우터
-router.post("/add", async (req, res) => {
-  const { googleEmail, nickname, profileImage } = req.body;
+// // 파일 업로드를 위한 Multer 설정
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, path.join(__dirname, "../public/uploads"));
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, Date.now() + "-" + file.originalname);
+//   },
+// });
+// const upload = multer({ storage: storage });
 
-  if (!googleEmail) {
-    return res.status(400).json({ error: "필수 필드가 누락되었습니다." });
-  }
+// 사용자 정보 수정 (프로필 사진 및 닉네임)
+// router.put("/:userId", upload.single("profileImage"), async (req, res) => {
+//   try {
+//     const { nickname } = req.body;
+//     let updatedUserData = { nickname };
 
-  try {
-    const newUser = new User({ googleEmail, nickname, profileImage });
+//     // 프로필 사진 업데이트 처리
+//     if (req.file) {
+//       updatedUserData.profilePicture = req.file.filename;
+//     }
 
-    await newUser.save();
+//     const updatedUser = await User.findByIdAndUpdate(
+//       req.params.userId,
+//       updatedUserData,
+//       { new: true }
+//     );
 
-    res
-      .status(201)
-      .json({ message: "사용자가 추가되었습니다.", user: newUser });
-  } catch (err) {
-    res.status(500).json({
-      error: "사용자 추가 중 오류가 발생했습니다.",
-      details: err.message,
-    });
-  }
-});
+//     if (!updatedUser) {
+//       return res.status(404).send("User not found");
+//     }
+
+//     res.json(updatedUser);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send("Error updating user");
+//   }
+// });
 
 module.exports = router;
