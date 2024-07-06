@@ -1,0 +1,60 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: User API
+  description: APIs for managing users
+
+paths:
+  /users/checkEmail:
+    post:
+      tags:
+        - User
+      summary: Check if email is already registered
+      description: Endpoint to check if the provided email address is already registered in the system.
+      parameters:
+        - name: body
+          in: body
+          description: Email address to check
+          required: true
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+      responses:
+        "200":
+          description: Email is available (not registered)
+        "409":
+          description: Email is already registered
+        "500":
+          description: Internal server error
+
+  /users/{userId}:
+    get:
+      tags:
+        - User
+      summary: Get user by ID
+      description: Retrieve user information based on the provided user ID.
+      parameters:
+        - name: userId
+          in: path
+          description: ID of the user to fetch
+          required: true
+          type: string
+      responses:
+        "200":
+          description: User found
+          schema:
+            type: object
+            properties:
+              _id:
+                type: string
+              email:
+                type: string
+              name:
+                type: string
+              # Add more properties as needed
+        "404":
+          description: User not found
+        "500":
+          description: Internal server error

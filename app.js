@@ -4,19 +4,18 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var connectMongoDB = require("./db/config");
-const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
+const fs = require("fs");
+const YAML = require("yaml");
 
 var indexRouter = require("./routes/indexRouter");
-var usersRouter = require("./routes/usersRouter");
-var retrofitRouter = require("./routes/retrofitRouter");
-var predictRouter = require("./routes/predictRouter");
 
 var app = express();
 const PORT = 3000;
 
-// Swagger 정의 가져오기
-const swaggerDefinition = require("./swaggerDef");
+// YAML 파일을 읽어 Swagger 정의 로드
+const swaggerFilePath = path.join(__dirname, "swagger", "swagger.yaml");
+const swaggerDocument = YAML.parse(fs.readFileSync(swaggerFilePath, "utf8"));
 
 // MongoDB 연결 설정
 connectMongoDB()
@@ -31,22 +30,14 @@ connectMongoDB()
     app.use(cookieParser());
     app.use(express.static(path.join(__dirname, "public")));
 
-    // Swagger-jsdoc 옵션 설정
-    const options = {
-      swaggerDefinition,
-      apis: ["./routes/*.js"], // API 경로 설정 (실제 API 파일들의 경로)
-    };
-
-    // Swagger-jsdoc 초기화
-    const swaggerSpec = swaggerJsdoc(options);
-
     // Swagger UI 설정
-    app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+    app.use(
+      "/api-docs",
+      swaggerUi.serve,
+      swaggerUi.setup(swaggerDocument, { explorer: true })
+    );
 
     app.use("/", indexRouter);
-    app.use("/users", usersRouter);
-    app.use("/retrofit", retrofitRouter);
-    app.use("/predict", predictRouter);
 
     // catch 404 and forward to error handler
     app.use(function (req, res, next) {
