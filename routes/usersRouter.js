@@ -31,4 +31,7 @@ router.delete("/:userid/deleteProfileImage", userController.deleteProfileImage);
 // 사용자 탈퇴
 router.delete("/:userid", userController.deleteUser);
 
+// 점수 업데이트
+// router.put("/:userid/score", userController.update);
+
 module.exports = router;
