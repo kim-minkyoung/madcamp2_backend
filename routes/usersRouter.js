@@ -4,61 +4,75 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
 const userController = require("../controllers/userController");
-
+const multer = require("multer");
 // 이메일 중복 여부 확인
-router.post("/checkEmail", userController.checkEmail);
+router.post(
+  "/checkEmail",
+  (req, res, next) => {
+    console.log("1");
+    next();
+  },
+  userController.checkEmail
+);
 
 // 사용자 정보 조회
-router.get("/:userId", async (req, res) => {
+router.get("/:userid", async (req, res) => {
   try {
-    const user = await User.findById(req.params.userId);
+    console.log("2");
+    const userId = req.params.userid;
+    console.log(`Fetching user with ID: ${userId}`);
+
+    // 데이터베이스에서 사용자 정보 조회
+    const user = await User.findById(userId);
+    console.log("3", user);
+
     if (!user) {
-      return res.status(404).send("User not found");
+      console.log("4");
+      return res.status(404).json({ error: "User not found" });
     }
+
+    // 사용자 정보 반환
     res.json(user);
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Error fetching user");
+    console.error("Error fetching user:", error);
+    res.status(500).json({ error: "Error fetching user" });
   }
 });
 
-// // 파일 업로드를 위한 Multer 설정
-// const storage = multer.diskStorage({
-//   destination: function (req, file, cb) {
-//     cb(null, path.join(__dirname, "../public/uploads"));
-//   },
-//   filename: function (req, file, cb) {
-//     cb(null, Date.now() + "-" + file.originalname);
-//   },
-// });
-// const upload = multer({ storage: storage });
+// Multer 설정: 프로필 사진 업로드를 위한 설정
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "../public/uploads"));
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+const upload = multer({ storage: storage });
 
-// 사용자 정보 수정 (프로필 사진 및 닉네임)
-// router.put("/:userId", upload.single("profileImage"), async (req, res) => {
-//   try {
-//     const { nickname } = req.body;
-//     let updatedUserData = { nickname };
+// PUT profile
+router.put(
+  "/:userid",
+  (req, res, next) => {
+    console.log("5");
+    next();
+  },
+  upload.single("profileImage"),
+  (req, res, next) => {
+    console.log("6");
+    next();
+  },
+  userController.updateProfile
+);
 
-//     // 프로필 사진 업데이트 처리
-//     if (req.file) {
-//       updatedUserData.profilePicture = req.file.filename;
-//     }
-
-//     const updatedUser = await User.findByIdAndUpdate(
-//       req.params.userId,
-//       updatedUserData,
-//       { new: true }
-//     );
-
-//     if (!updatedUser) {
-//       return res.status(404).send("User not found");
-//     }
-
-//     res.json(updatedUser);
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send("Error updating user");
-//   }
-// });
+// DEL profileImage
+router.delete(
+  "/:userid/deleteProfileImage",
+  (req, res, next) => {
+    console.log("8");
+    next();
+  },
+  userController.deleteProfileImage
+);
 
 module.exports = router;
