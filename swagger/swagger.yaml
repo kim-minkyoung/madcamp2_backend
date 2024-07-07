@@ -41,19 +41,19 @@ paths:
                   profileImage:
                     type: "string"
                     description: "사용자 프로필 이미지 URL"
-                  userId:
+                  userid:
                     type: "string"
                     description: "사용자 ID"
         "500":
           description: "서버 오류"
 
-  /users/{userId}:
+  /users/{userid}:
     get:
       summary: "사용자 정보 조회"
       tags:
         - "Users"
       parameters:
-        - name: "userId"
+        - name: "userid"
           in: "path"
           required: true
           schema:
@@ -76,7 +76,7 @@ paths:
       tags:
         - "Users"
       parameters:
-        - name: "userId"
+        - name: "userid"
           in: "path"
           required: true
           schema:
@@ -107,14 +107,40 @@ paths:
           description: "사용자를 찾을 수 없음"
         "500":
           description: "서버 오류"
+    delete:
+      summary: "사용자 삭제"
+      tags:
+        - "Users"
+      parameters:
+        - name: "userid"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+          description: "삭제할 사용자 ID"
+      responses:
+        "200":
+          description: "성공적으로 사용자를 삭제"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    description: "사용자 삭제 성공 메시지"
+        "404":
+          description: "사용자를 찾을 수 없음"
+        "500":
+          description: "서버 오류"
 
-  /users/{userId}/deleteProfileImage:
+  /users/{userid}/deleteProfileImage:
     delete:
       summary: "사용자 프로필 이미지 삭제"
       tags:
         - "Users"
       parameters:
-        - name: "userId"
+        - name: "userid"
           in: "path"
           required: true
           schema:

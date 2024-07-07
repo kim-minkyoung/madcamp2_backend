@@ -30,6 +30,29 @@ exports.checkEmail = async (req, res) => {
   }
 };
 
+exports.getProfile = async (req, res) => {
+  try {
+    console.log("2");
+    const userId = req.params.userid;
+    console.log(`Fetching user with ID: ${userId}`);
+
+    // 데이터베이스에서 사용자 정보 조회
+    const user = await User.findById(userId);
+    console.log("3", user);
+
+    if (!user) {
+      console.log("4");
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // 사용자 정보 반환
+    res.json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ error: "Error fetching user" });
+  }
+};
+
 // 이미 존재하는 이메일인지 확인하는 함수
 const checkUserExistence = async (email) => {
   try {
@@ -101,5 +124,22 @@ exports.deleteProfileImage = async (req, res) => {
   } catch (error) {
     console.error("Error deleting profile image:", error);
     res.status(500).json({ error: "Error deleting profile image" });
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  const userid = req.params.userid;
+
+  try {
+    const deletedUser = await User.findByIdAndDelete(userid);
+
+    if (!deletedUser) {
+      return res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
+    }
+
+    res.json({ message: "사용자가 성공적으로 삭제되었습니다." });
+  } catch (error) {
+    console.error("사용자 삭제 중 오류:", error);
+    res.status(500).json({ error: "사용자 삭제 중 오류가 발생했습니다." });
   }
 };
