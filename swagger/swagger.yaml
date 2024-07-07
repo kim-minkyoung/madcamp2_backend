@@ -72,7 +72,7 @@ paths:
           description: "서버 오류"
 
     put:
-      summary: "사용자 프로필 업데이트"
+      summary: "사용자 프로필(닉네임, 프사) 업데이트 또는 점수 누적"
       tags:
         - "Users"
       parameters:
@@ -83,7 +83,6 @@ paths:
             type: "string"
           description: "업데이트할 사용자 ID"
       requestBody:
-        required: true
         content:
           application/json:
             schema:
@@ -96,6 +95,10 @@ paths:
                   type: "string"
                   format: "binary"
                   description: "프로필 사진 파일"
+                score:
+                  type: "number"
+                  description: "사용자 점수"
+        description: "필요에 따라 셋 중 하나만 보내도 됨"
       responses:
         "200":
           description: "성공적으로 사용자 프로필을 업데이트"
@@ -109,7 +112,7 @@ paths:
           description: "서버 오류"
 
     delete:
-      summary: "사용자 삭제"
+      summary: "사용자 탈퇴"
       tags:
         - "Users"
       parameters:
@@ -196,66 +199,6 @@ paths:
                     description: "개인 사용자 단어"
         "500":
           description: "서버 오류"
-  /game/{userid}/score:
-    put:
-      summary: Update user's score
-      parameters:
-        - in: path
-          name: userid
-          required: true
-          schema:
-            type: string
-          description: User ID to update score for
-        - in: body
-          name: body
-          required: true
-          description: JSON object containing score information
-          schema:
-            type: object
-            required:
-              - score
-            properties:
-              score:
-                type: integer
-                description: The score to update or add
-      responses:
-        "201":
-          description: New score added successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: New score added
-                  score:
-                    $ref: "#/components/schemas/Score"
-        "200":
-          description: Score updated successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Score updated
-                  score:
-                    $ref: "#/components/schemas/Score"
-        "500":
-          description: Failed to update score
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: Failed to update score
-                  error:
-                    type: string
-                    example: Error message details
 
 components:
   schemas:
@@ -270,15 +213,6 @@ components:
           type: "string"
         profileImage:
           type: "string"
-    Score:
-      type: "object"
-      properties:
-        user:
-          type: "string"
-          description: "사용자 ID"
         score:
           type: "number"
-          description: "사용자의 점수"
-      required:
-        - user
-        - score
+          description: "누적 점수"
