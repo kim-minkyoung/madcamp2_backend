@@ -1,5 +1,5 @@
 var cron = require("node-cron");
-let currentRandomWord = setRandomWord();
+let currentGlobalWord = setRandomWord();
 
 exports.getGlobalWord = (req, res) => {
   try {
@@ -22,8 +22,8 @@ exports.getPersonalWord = (req, res) => {
 
 // 매시 정각마다 랜덤 단어 업데이트
 cron.schedule("*/1 * * * *", () => {
-  currentRandomWord = setRandomWord();
-  console.log(`1분에 하나씩 새로운 랜덤 단어: ${currentRandomWord}`);
+  currentGlobalWord = setRandomWord();
+  console.log(`1분에 하나씩 새로운 랜덤 단어: ${currentGlobalWord}`);
 });
 
 // 랜덤 단어 생성 함수

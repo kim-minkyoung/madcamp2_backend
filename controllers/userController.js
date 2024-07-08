@@ -1,6 +1,20 @@
 // controllers/userController.js
 
 const User = require("../models/User");
+const multer = require("multer");
+const path = require("path");
+
+// Multer 설정: 프로필 사진 업로드를 위한 설정
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "../public/uploads"));
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + "-" + file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage, limits: { fileSize: 7000000 } });
 
 exports.checkEmail = async (req, res) => {
   const email = req.body.email;
@@ -70,26 +84,55 @@ exports.updateProfile = async (req, res) => {
     const { nickname, profileImage, score } = req.body;
     let user = await User.findById(userid);
 
-    // 업데이트할 데이터 객체 초기화
     const updateData = {};
 
     if (nickname !== undefined) {
-      // 닉네임이 요청에 포함되어 있으면 추가 또는 수정
       updateData.nickname = nickname;
     }
 
     if (profileImage !== undefined) {
       // 프로필 사진이 요청에 포함되어 있으면 추가 또는 수정
-      updateData.profileImage = profileImage;
-    }
+      // 프로필 사진 업로드 처리
+      upload.single("profileImage")(req, res, async function (err) {
+        if (err instanceof multer.MulterError) {
+          // Multer 관련 오류 처리
+          console.error("Multer error:", err);
+          return res.status(500).json({ error: "Multer error" });
+        } else if (err) {
+          // 기타 오류 처리
+          console.error("Error uploading file:", err);
+          return res.status(500).json({ error: "Error uploading file" });
+        }
 
-    const existingScore = user.score || 0;
-    // 점수 필드를 요청으로 받은 경우 처리
-    // 요청으로 들어온 점수를 기존 점수에 더함
-    if (score !== undefined) {
+        // 파일 업로드 성공 시, 업데이트할 데이터에 프로필 이미지 경로 추가
+        if (req.file) {
+          updateData.profileImage = req.file.path;
+        }
+
+        await updateUserAndRespond(res, userid, updateData);
+      });
+    } else if (score !== undefined) {
+      // 점수가 요청에 포함되어 있으면 추가 또는 수정
+      const existingScore = user.score || 0;
       updateData.score = existingScore + score;
-    }
 
+      await updateUserAndRespond(res, userid, updateData);
+    } else {
+      // 닉네임, 프로필 사진, 점수 모두 요청에 포함되지 않으면 에러 처리
+      return res.status(400).json({
+        error:
+          "닉네임, 프로필 사진 또는 점수 중 하나는 반드시 제공되어야 합니다.",
+      });
+    }
+  } catch (error) {
+    console.error("프로필 업데이트 오류:", error);
+    res.status(500).json({ error: "프로필 업데이트 중 오류가 발생했습니다." });
+  }
+};
+
+// 데이터베이스에서 사용자 업데이트 후 응답 처리
+async function updateUserAndRespond(res, userid, updateData) {
+  try {
     // 데이터베이스에서 사용자 업데이트
     const updatedUser = await User.findByIdAndUpdate(
       userid,
@@ -106,7 +149,7 @@ exports.updateProfile = async (req, res) => {
     console.error("프로필 업데이트 오류:", error);
     res.status(500).json({ error: "프로필 업데이트 중 오류가 발생했습니다." });
   }
-};
+}
 
 exports.deleteProfileImage = async (req, res) => {
   const userid = req.params.userid;
