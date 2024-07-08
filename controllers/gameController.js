@@ -1,5 +1,5 @@
 var cron = require("node-cron");
-let currentGlobalWord = "";
+let currentGlobalWord = setRandomWord();
 
 exports.getGlobalWord = (req, res) => {
   try {
