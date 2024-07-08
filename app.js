@@ -4,6 +4,9 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var connectMongoDB = require("./db/config");
+
+const bodyParser = require("body-parser");
+
 const swaggerUi = require("swagger-ui-express");
 const fs = require("fs");
 const YAML = require("yaml");
