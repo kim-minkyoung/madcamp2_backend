@@ -6,7 +6,7 @@ info:
 servers:
   - url: "http://43.203.119.73:3000"
 paths:
-  /users/checkEmail:
+  /user/checkEmail:
     post:
       summary: "이메일 중복 여부 확인 후 중복 안 되면 회원가입"
       tags:
@@ -41,13 +41,13 @@ paths:
                   profileImage:
                     type: "string"
                     description: "사용자 프로필 이미지 URL"
-                  userid:
+                  _id:
                     type: "string"
                     description: "사용자 ID"
         "500":
           description: "서버 오류"
 
-  /users/{userid}:
+  /user/{userid}:
     get:
       summary: "사용자 정보 조회"
       tags:
@@ -138,7 +138,7 @@ paths:
         "500":
           description: "서버 오류"
 
-  /users/{userid}/deleteProfileImage:
+  /user/{userid}/deleteProfileImage:
     delete:
       summary: "사용자 프로필 이미지 삭제"
       tags:
