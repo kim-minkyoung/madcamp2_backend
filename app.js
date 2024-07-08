@@ -6,6 +6,7 @@ var logger = require("morgan");
 var connectMongoDB = require("./db/config");
 
 const bodyParser = require("body-parser");
+const multer = require("multer");
 
 const swaggerUi = require("swagger-ui-express");
 const fs = require("fs");
