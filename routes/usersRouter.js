@@ -13,9 +13,6 @@ router.get("/:userid", userController.getProfile);
 // PUT profile
 router.put("/:userid", userController.updateProfile);
 
-// DEL profileImage
-router.delete("/:userid/deleteProfileImage", userController.deleteProfileImage);
-
 // 사용자 탈퇴
 router.delete("/:userid", userController.deleteUser);
 

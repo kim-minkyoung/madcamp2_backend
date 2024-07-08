@@ -38,9 +38,6 @@ paths:
                   nickname:
                     type: "string"
                     description: "사용자 닉네임"
-                  profileImage:
-                    type: "string"
-                    description: "사용자 프로필 이미지 URL"
                   _id:
                     type: "string"
                     description: "사용자 ID"
@@ -72,7 +69,7 @@ paths:
           description: "서버 오류"
 
     put:
-      summary: "사용자 프로필(닉네임, 프사) 업데이트 또는 점수 누적"
+      summary: "사용자 프로필(닉네임) 업데이트 또는 점수 누적"
       tags:
         - "Users"
       parameters:
@@ -91,10 +88,6 @@ paths:
                 nickname:
                   type: "string"
                   description: "사용자 닉네임"
-                profileImage:
-                  type: "string"
-                  format: "binary"
-                  description: "프로필 사진 파일"
                 score:
                   type: "number"
                   description: "사용자 점수"
@@ -133,30 +126,6 @@ paths:
                   message:
                     type: "string"
                     description: "사용자 삭제 성공 메시지"
-        "404":
-          description: "사용자를 찾을 수 없음"
-        "500":
-          description: "서버 오류"
-
-  /user/{userid}/deleteProfileImage:
-    delete:
-      summary: "사용자 프로필 이미지 삭제"
-      tags:
-        - "Users"
-      parameters:
-        - name: "userid"
-          in: "path"
-          required: true
-          schema:
-            type: "string"
-          description: "프로필 이미지를 삭제할 사용자 ID"
-      responses:
-        "200":
-          description: "성공적으로 프로필 이미지를 삭제"
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/User"
         "404":
           description: "사용자를 찾을 수 없음"
         "500":
@@ -210,8 +179,6 @@ components:
         email:
           type: "string"
         nickname:
-          type: "string"
-        profileImage:
           type: "string"
         score:
           type: "number"
