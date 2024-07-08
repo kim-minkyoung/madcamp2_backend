@@ -4,7 +4,7 @@ info:
   version: "1.0.0"
   description: "API 문서 설명"
 servers:
-  - url: "http://3.36.111.15:3000"
+  - url: "http://43.203.119.73:3000"
 paths:
   /users/checkEmail:
     post:
