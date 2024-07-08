@@ -105,8 +105,8 @@ exports.updateProfile = async (req, res) => {
         }
 
         // 파일 업로드 성공 시, 업데이트할 데이터에 프로필 이미지 경로 추가
-        if (req.file) {
-          updateData.profileImage = req.file.path;
+        if (req.profileImage) {
+          updateData.profileImage = req.profileImage.path;
         }
 
         await updateUserAndRespond(res, userid, updateData);
