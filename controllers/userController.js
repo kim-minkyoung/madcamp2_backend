@@ -105,7 +105,7 @@ exports.updateProfile = async (req, res) => {
       }
 
       if (req.file) {
-        updateData.profileImage = profileImage;
+        updateData.profileImage = req.profileImage.filename;
       }
       try {
         // 데이터베이스에서 사용자 업데이트
@@ -135,18 +135,18 @@ exports.updateProfile = async (req, res) => {
       updateData.score = existingScore + score;
     }
 
-    // 데이터베이스에서 사용자 업데이트
-    const updatedUser = await User.findByIdAndUpdate(
-      userid,
-      { $set: updateData },
-      { new: true, runValidators: true }
-    );
+    // // 데이터베이스에서 사용자 업데이트
+    // const updatedUser = await User.findByIdAndUpdate(
+    //   userid,
+    //   { $set: updateData },
+    //   { new: true, runValidators: true }
+    // );
 
-    if (!updatedUser) {
-      return res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
-    }
+    // if (!updatedUser) {
+    //   return res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
+    // }
 
-    res.json(updatedUser);
+    // res.json(updatedUser);
   } catch (error) {
     console.error("프로필 업데이트 오류:", error);
     res.status(500).json({ error: "프로필 업데이트 중 오류가 발생했습니다." });
