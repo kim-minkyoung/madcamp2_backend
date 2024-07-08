@@ -92,6 +92,13 @@ exports.updateProfile = async (req, res) => {
       updateData.nickname = nickname;
     }
 
+    const existingScore = user.score || 0;
+    // 점수 필드를 요청으로 받은 경우 처리
+    // 요청으로 들어온 점수를 기존 점수에 더함
+    if (score !== undefined) {
+      updateData.score = existingScore + score;
+    }
+
     // 프로필 사진 업로드 처리
     upload.single("profileImage")(req, res, async function (err) {
       if (err instanceof multer.MulterError) {
@@ -105,7 +112,7 @@ exports.updateProfile = async (req, res) => {
       }
 
       if (req.file) {
-        updateData.profileImage = req.profileImage.filename;
+        updateData.profileImage = req.file.filename;
       }
       try {
         // 데이터베이스에서 사용자 업데이트
@@ -127,13 +134,6 @@ exports.updateProfile = async (req, res) => {
           .json({ error: "프로필 사진 업데이트 중 오류가 발생했습니다." });
       }
     });
-
-    const existingScore = user.score || 0;
-    // 점수 필드를 요청으로 받은 경우 처리
-    // 요청으로 들어온 점수를 기존 점수에 더함
-    if (score !== undefined) {
-      updateData.score = existingScore + score;
-    }
 
     // // 데이터베이스에서 사용자 업데이트
     // const updatedUser = await User.findByIdAndUpdate(
