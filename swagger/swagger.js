@@ -7,7 +7,7 @@ const options = {
   },
   servers: [
     {
-      url: "http://localhost:3000",
+      url: "http://3.36.111.15:3000",
     },
   ],
   schemes: ["http"],
