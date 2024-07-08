@@ -15,7 +15,7 @@ exports.checkEmail = async (req, res) => {
         isExistingUser: true,
         nickname: user.nickname,
         profileImage: user.profileImage,
-        userid: user._id,
+        _id: user._id,
       });
     } else {
       const newUser = new User(req.body);
