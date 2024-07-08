@@ -11,16 +11,16 @@ router.post("/checkEmail", userController.checkEmail);
 // 사용자 정보 조회
 router.get("/:userid", userController.getProfile);
 
-// Multer 설정: 프로필 사진 업로드를 위한 설정
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../public/uploads"));
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-const upload = multer({ storage: storage });
+// // Multer 설정: 프로필 사진 업로드를 위한 설정
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null, path.join(__dirname, "../public/uploads"));
+//   },
+//   filename: function (req, file, cb) {
+//     cb(null, Date.now() + "-" + file.originalname);
+//   },
+// });
+// const upload = multer({ storage: storage });
 
 // PUT profile
 router.put("/:userid", userController.updateProfile);

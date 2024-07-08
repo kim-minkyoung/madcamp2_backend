@@ -30,6 +30,15 @@ connectMongoDB()
     app.use(cookieParser());
     app.use(express.static(path.join(__dirname, "public")));
 
+    // JSON body parser with size limit
+    app.use(bodyParser.json({ limit: "7mb" }));
+
+    // URL-encoded body parser with size limit
+    app.use(bodyParser.urlencoded({ extended: true, limit: "7mb" }));
+
+    // Multer for handling file uploads with size limit
+    const upload = multer({ limits: { fileSize: 7000000 } }); // 1MB limit
+
     // Swagger UI 설정
     app.use(
       "/api-docs",
