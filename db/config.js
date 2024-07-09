@@ -11,10 +11,10 @@ const connectDB = async () => {
     });
     console.log("MongoDB Connected");
 
-    const User = require("../models/User");
+    const UserInfo = require("../models/UserInfo");
 
     // 모든 사용자 정보 출력
-    const users = await User.find({});
+    const users = await UserInfo.find({});
     console.log("모든 사용자 정보:");
     console.log(users);
 
