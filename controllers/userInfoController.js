@@ -19,7 +19,7 @@ exports.checkEmail = async (req, res) => {
     } else {
       const newUserInfo = new UserInfo(req.body);
       await newUserInfo.save();
-      const newUser = new User(newUserInfo);
+      const newUser = new User({ userInfo: newUserInfo._id });
       await newUserInfo.save();
       res.json({ isExistingUser: false, user: newUser });
     }
