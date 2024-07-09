@@ -14,6 +14,6 @@ router.delete("/:userid", userInfoController.deleteUser);
 router.get("/:userid", userInfoController.getProfile);
 
 // 닉네임 수정
-router.put("/:userid", userInfoController.updateNickname);
+router.put("/:userid", userInfoController.updateProfile);
 
 module.exports = router;

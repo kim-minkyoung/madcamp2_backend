@@ -37,19 +37,26 @@ const checkUserExistence = async (email) => {
   }
 };
 
-exports.updateNickname = async (req, res) => {
+exports.updateProfile = async (req, res) => {
   try {
     const userid = req.params.userid;
-    const { nickname } = req.body;
+    const { nickname, profileImage } = req.body;
 
-    if (!nickname) {
-      return res.status(400).json({ error: "닉네임을 제공해야 합니다." });
+    // 업데이트할 데이터 객체 초기화
+    const updateData = {};
+
+    if (nickname !== undefined) {
+      // 닉네임이 요청에 포함되어 있으면 추가 또는 수정
+      updateData.nickname = nickname;
+    }
+    if (profileImage !== undefined) {
+      updateData.profileImage = profileImage;
     }
 
     // 데이터베이스에서 사용자 업데이트
     const updatedUser = await User.findByIdAndUpdate(
       userid,
-      { nickname: nickname },
+      { $set: updateData },
       { new: true, runValidators: true }
     );
 
