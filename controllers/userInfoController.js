@@ -51,7 +51,7 @@ exports.updateNickname = async (req, res) => {
     }
 
     // 데이터베이스에서 사용자 업데이트
-    const updatedUserInfo = await UserInfo.findByIdAndUpdate(
+    const updatedUser = await UserInfo.findByIdAndUpdate(
       userid,
       { nickname: nickname },
       { new: true, runValidators: true }
@@ -61,13 +61,7 @@ exports.updateNickname = async (req, res) => {
       return res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
     }
 
-    const user = await User.findOneAndUpdate(
-      { userInfo: userInfo.userid },
-      { $set: { "userInfo.nickname": userInfo.nickname } },
-      { new: true, runValidators: true }
-    );
-
-    res.json({ userInfo: updatedUserInfo, user });
+    res.json(updatedUser);
   } catch (error) {
     console.error("프로필 업데이트 오류:", error);
     res.status(500).json({ error: "프로필 업데이트 중 오류가 발생했습니다." });
@@ -75,18 +69,10 @@ exports.updateNickname = async (req, res) => {
 };
 
 exports.deleteUser = async (req, res) => {
-  const userId = req.params.userid;
+  const userid = req.params.userid;
 
   try {
-    // UserInfo에서 사용자 삭제
-    const deletedUserInfo = await UserInfo.findByIdAndDelete(userId);
-
-    if (!deletedUserInfo) {
-      return res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
-    }
-
-    // User에서 해당 UserInfo 참조를 가진 문서 삭제
-    const deletedUser = await User.findOneAndDelete({ userInfo: userId });
+    const deletedUser = await UserInfo.findByIdAndDelete(userid);
 
     if (!deletedUser) {
       return res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
