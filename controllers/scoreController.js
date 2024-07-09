@@ -32,6 +32,9 @@ exports.updateScore = async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
+    if (!user.totalScore) {
+      user.totalScore = 0; // 초기화
+    }
 
     // Update score and playCount
     user.score = score;
