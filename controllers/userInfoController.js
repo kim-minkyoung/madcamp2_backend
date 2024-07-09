@@ -28,42 +28,6 @@ exports.checkEmail = async (req, res) => {
   }
 };
 
-exports.getProfile = async (req, res) => {
-  try {
-    console.log("2");
-    const userId = req.params.userid;
-    console.log(`Fetching user with ID: ${userId}`);
-
-    // 데이터베이스에서 사용자 정보 조회
-    const user = await User.findById(userId);
-    console.log("3", user);
-
-    if (!user) {
-      console.log("4");
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    // 사용자 정보 반환
-    res.json(user);
-  } catch (error) {
-    console.error("Error fetching user:", error);
-    res.status(500).json({ error: "Error fetching user" });
-  }
-};
-
-exports.getAllUsersSortedByScore = async (req, res) => {
-  try {
-    // 모든 사용자 정보를 점수 내림차순으로 가져오기
-    const users = await User.find().sort({ score: -1 });
-
-    // 사용자 정보 반환
-    res.json(users);
-  } catch (error) {
-    console.error("Error fetching users sorted by score:", error);
-    res.status(500).json({ error: "Error fetching users sorted by score" });
-  }
-};
-
 // 이미 존재하는 이메일인지 확인하는 함수
 const checkUserExistence = async (email) => {
   try {
@@ -75,30 +39,19 @@ const checkUserExistence = async (email) => {
   }
 };
 
-exports.updateProfile = async (req, res) => {
+exports.updateNickname = async (req, res) => {
   try {
     const userid = req.params.userid;
-    const { nickname, score } = req.body;
-    let user = await User.findById(userid);
+    const { nickname } = req.body;
 
-    // 업데이트할 데이터 객체 초기화
-    const updateData = {};
-
-    if (nickname !== undefined) {
-      // 닉네임이 요청에 포함되어 있으면 추가 또는 수정
-      updateData.nickname = nickname;
-    }
-
-    // 점수 필드를 요청으로 받은 경우 처리
-    // 요청으로 들어온 점수를 기존 점수에 더함
-    if (score !== undefined) {
-      updateData.score = score;
+    if (!nickname) {
+      return res.status(400).json({ error: "닉네임을 제공해야 합니다." });
     }
 
     // 데이터베이스에서 사용자 업데이트
     const updatedUser = await User.findByIdAndUpdate(
       userid,
-      { $set: updateData },
+      { nickname: nickname },
       { new: true, runValidators: true }
     );
 
@@ -127,29 +80,5 @@ exports.deleteUser = async (req, res) => {
   } catch (error) {
     console.error("사용자 삭제 중 오류:", error);
     res.status(500).json({ error: "사용자 삭제 중 오류가 발생했습니다." });
-  }
-};
-
-exports.updateScore = async (req, res) => {
-  const { userid, score } = req.body;
-
-  try {
-    // 사용자의 정보 조회
-    let user = await User.findById(userid);
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    // 점수 업데이트
-    user.score += score;
-    await user.save();
-
-    res.status(200).json({ message: "Score updated", user });
-  } catch (err) {
-    console.error("Error updating score:", err);
-    res
-      .status(500)
-      .json({ message: "Failed to update score", error: err.message });
   }
 };

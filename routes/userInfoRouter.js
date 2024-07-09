@@ -10,4 +10,7 @@ router.post("/checkEmail", userInfoController.checkEmail);
 // 사용자 탈퇴
 router.delete("/:userid", userInfoController.deleteUser);
 
+// 닉네임 수정
+router.put("/:userid", userInfoController.updateNickname);
+
 module.exports = router;
