@@ -15,7 +15,7 @@ exports.checkEmail = async (req, res) => {
     } else {
       const newUser = new User(req.body);
       await newUser.save();
-      res.json({ isExistingUser: false });
+      res.json({ isExistingUser: false, newUser });
     }
   } catch (error) {
     console.error("Error checking user existence:", error);
