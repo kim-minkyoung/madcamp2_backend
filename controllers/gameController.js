@@ -12,10 +12,10 @@ exports.getGlobalWord = (req, res) => {
   }
 };
 
-// 매시 정각마다 랜덤 단어 업데이트
-cron.schedule("*/1 * * * *", () => {
+// 매 시 정각 (0분)에 실행되도록 설정
+cron.schedule("0 * * * *", () => {
   currentGlobalWord = setRandomWord();
-  console.log(`1분에 하나씩 새로운 랜덤 단어: ${currentGlobalWord}`);
+  console.log(`매 시 정각에 새로운 랜덤 단어: ${currentGlobalWord}`);
 });
 
 // 랜덤 단어 생성 함수
