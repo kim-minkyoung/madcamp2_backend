@@ -1,16 +1,19 @@
-// // routes/userGameRouter.js
+// routes/userGameRouter.js
 
-// const express = require("express");
-// const router = express.Router();
-// const userController = require("../controllers/userController");
+const express = require("express");
+const router = express.Router();
+const userController = require("../controllers/userController");
 
-// // 사용자 정보 조회(프로필)
-// router.get("/:userid", userController.getProfile);
+// 사용자 정보 조회(프로필)
+router.get("/:userid", userController.getProfile);
 
-// // 모든 사용자 점수를 내림차순으로 가져오기
-// router.get("/", userController.getAllUsersSortedByScore);
+// 모든 사용자 누적 점수를 내림차순으로 가져오기
+router.get("/totalScore", userController.getUsersSortedByTotalScore);
 
-// // PUT profile
-// router.put("/:userid", userController.updateProfile);
+// 모든 사용자 이번 한 시간 점수를 내림차순으로 가져오기
+router.get("/totalScore", userController.getUsersSortedByScore);
 
-// module.exports = router;
+// 이번 판 점수와 playCount 함께 업데이트(반드시 둘이 함께 넘겨줘야 함)
+router.put("/:userid", userController.updateScore);
+
+module.exports = router;

@@ -6,7 +6,7 @@ router.get("/", function (req, res, next) {
   res.render("index", { title: "Express" });
 });
 router.use("/userInfo", require("./userInfoRouter"));
-// router.use("/user", require("./userRouter"));
+router.use("/user", require("./userRouter"));
 router.use("/game", require("./gameRouter"));
 // router.use("/retrofit", require("./retrofitRouter"));
 // router.use("/predict", require("./predictRouter"));
