@@ -58,7 +58,7 @@ connectMongoDB()
 
     // 서버 시작
     app.listen(PORT, () => {
-      console.log(`서버가 http://43.203.119.73:${PORT} 에서 실행 중입니다.`);
+      console.log(`서버가 http://43.200.87.173:${PORT} 에서 실행 중입니다.`);
     });
   })
   .catch((err) => {

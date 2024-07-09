@@ -7,7 +7,7 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: "http://43.203.119.73:3000", // 서버의 기본 URL
+      url: "http://43.200.87.173:3000", // 서버의 기본 URL
     },
   ],
 };
