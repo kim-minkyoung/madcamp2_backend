@@ -2,7 +2,7 @@
 
 const express = require("express");
 const router = express.Router();
-const userInfoController = require("../controllers/userInfoController");
+const userInfoController = require("../controllers/userController");
 
 // 이메일 중복 여부 확인 (객체 전부다 return 하게 수정)
 router.post("/checkEmail", userInfoController.checkEmail);

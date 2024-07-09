@@ -8,9 +8,9 @@ servers:
 paths:
   /user/checkEmail:
     post:
-      summary: "이메일 중복 여부 확인 후 중복 안 되면 회원가입"
+      summary: "이메일 중복 확인, 중복 아니면 회원가입, 중복이면 로그인"
       tags:
-        - "Users"
+        - "사용자"
       requestBody:
         required: true
         content:
@@ -20,13 +20,10 @@ paths:
               properties:
                 email:
                   type: "string"
-                  description: "확인할 이메일"
-                nickname:
-                  type: "string"
-                  description: "추가할 닉네임"
+                  description: "확인할 이메일 주소"
       responses:
         "200":
-          description: "성공적으로 이메일 중복 여부를 확인"
+          description: "성공"
           content:
             application/json:
               schema:
@@ -34,13 +31,9 @@ paths:
                 properties:
                   isExistingUser:
                     type: "boolean"
-                    description: "사용자가 존재하는지 여부"
-                  nickname:
-                    type: "string"
-                    description: "사용자 닉네임"
-                  _id:
-                    type: "string"
-                    description: "사용자 ID"
+                    description: "사용자 존재 여부"
+                  user:
+                    $ref: "#/components/schemas/User"
         "500":
           description: "서버 오류"
 
@@ -48,7 +41,7 @@ paths:
     get:
       summary: "사용자 정보 조회"
       tags:
-        - "Users"
+        - "사용자"
       parameters:
         - name: "userid"
           in: "path"
@@ -69,9 +62,9 @@ paths:
           description: "서버 오류"
 
     put:
-      summary: "사용자 프로필(닉네임) 업데이트 또는 점수 누적"
+      summary: "사용자 프로필 업데이트(닉네임, 프사 둘 중 하나만도 가능)"
       tags:
-        - "Users"
+        - "사용자"
       parameters:
         - name: "userid"
           in: "path"
@@ -80,6 +73,7 @@ paths:
             type: "string"
           description: "업데이트할 사용자 ID"
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -88,10 +82,9 @@ paths:
                 nickname:
                   type: "string"
                   description: "사용자 닉네임"
-                score:
-                  type: "number"
-                  description: "사용자 점수"
-        description: "필요에 따라 둘 중 하나만 보내도 됨"
+                profileImage:
+                  type: "string"
+                  description: "프사 동물 이름"
       responses:
         "200":
           description: "성공적으로 사용자 프로필을 업데이트"
@@ -105,9 +98,9 @@ paths:
           description: "서버 오류"
 
     delete:
-      summary: "사용자 탈퇴"
+      summary: "탈퇴"
       tags:
-        - "Users"
+        - "사용자"
       parameters:
         - name: "userid"
           in: "path"
@@ -131,14 +124,14 @@ paths:
         "500":
           description: "서버 오류"
 
-  /user:
+  /score/total:
     get:
-      summary: "모든 사용자 정보를 점수 내림차순으로 조회"
+      summary: "모든 사용자 누적 점수를 내림차순으로 가져오기"
       tags:
-        - "Users"
+        - "점수"
       responses:
         "200":
-          description: "성공적으로 사용자 정보를 조회"
+          description: "성공적으로 모든 사용자 정보를 조회"
           content:
             application/json:
               schema:
@@ -148,11 +141,70 @@ paths:
         "500":
           description: "서버 오류"
 
+    /score:
+      get:
+        summary: "모든 사용자 이번 시간 점수를 내림차순으로 가져오기"
+        tags:
+          - "점수"
+        responses:
+          "200":
+            description: "성공적으로 모든 사용자 정보를 조회"
+            content:
+              application/json:
+                schema:
+                  type: "array"
+                  items:
+                    $ref: "#/components/schemas/User"
+          "500":
+            description: "서버 오류"
+  /score/{userid}:
+    put:
+      summary: "사용자 점수 및 플레이 횟수 업데이트"
+      tags:
+        - "사용자"
+      parameters:
+        - name: "userid"
+          in: "path"
+          required: true
+          schema:
+            type: "string"
+          description: "업데이트할 사용자 ID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "object"
+              properties:
+                score:
+                  type: "number"
+                  description: "새로운 점수"
+                playCount:
+                  type: "integer"
+                  description: "플레이 횟수"
+      responses:
+        "200":
+          description: "성공적으로 사용자 점수 및 플레이 횟수를 업데이트"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  message:
+                    type: "string"
+                    description: "점수 업데이트 성공 메시지"
+                  user:
+                    $ref: "#/components/schemas/User"
+        "404":
+          description: "사용자를 찾을 수 없음"
+        "500":
+          description: "서버 오류"
+
   /game/globalWord:
     get:
-      summary: "모든 사용자가 동일한 글로벌 단어 받기"
+      summary: "글로벌 단어 제공"
       tags:
-        - "Game"
+        - "게임"
       responses:
         "200":
           description: "성공적으로 글로벌 단어 제공"
@@ -164,25 +216,6 @@ paths:
                   word:
                     type: "string"
                     description: "글로벌 단어"
-        "500":
-          description: "서버 오류"
-
-  /game/personalWord:
-    get:
-      summary: "개인 사용자만의 랜덤 단어 받기"
-      tags:
-        - "Game"
-      responses:
-        "200":
-          description: "성공적으로 개인 사용자 단어 제공"
-          content:
-            application/json:
-              schema:
-                type: "object"
-                properties:
-                  word:
-                    type: "string"
-                    description: "개인 사용자 단어"
         "500":
           description: "서버 오류"
 
@@ -200,3 +233,12 @@ components:
         score:
           type: "number"
           description: "누적 점수"
+        totalScore:
+          type: "number"
+          description: "총 누적 점수"
+        playCount:
+          type: "number"
+          description: "게임 플레이 횟수"
+        profileImage:
+          type: "string"
+          description: "프로필 이미지 URL"

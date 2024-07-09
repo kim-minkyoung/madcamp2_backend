@@ -5,7 +5,7 @@ var router = express.Router();
 router.get("/", function (req, res, next) {
   res.render("index", { title: "Express" });
 });
-router.use("/user", require("./userInfoRouter"));
+router.use("/user", require("./userRouter"));
 router.use("/score", require("./scoreRouter"));
 router.use("/game", require("./gameRouter"));
 // router.use("/retrofit", require("./retrofitRouter"));
