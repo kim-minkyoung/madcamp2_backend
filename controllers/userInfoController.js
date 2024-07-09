@@ -7,12 +7,10 @@ exports.checkEmail = async (req, res) => {
     const userExists = await checkUserExistence(email);
     if (userExists) {
       // 사용자 정보 가져오기
-
       const user = await User.findOne({ email });
       res.json({
         isExistingUser: true,
-        nickname: user.nickname,
-        _id: user._id,
+        user,
       });
     } else {
       const newUser = new User(req.body);
