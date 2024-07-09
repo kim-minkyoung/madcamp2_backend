@@ -4,16 +4,13 @@ const User = require("../models/User");
 
 exports.getProfile = async (req, res) => {
   try {
-    console.log("2");
-    const userId = req.params._id;
+    const userId = req.params.userid;
     console.log(`Fetching user with ID: ${userId}`);
 
     // 데이터베이스에서 사용자 정보 조회
     const user = await User.findById(userId);
-    console.log("3", user);
 
     if (!user) {
-      console.log("4");
       return res.status(404).json({ error: "User not found" });
     }
 
