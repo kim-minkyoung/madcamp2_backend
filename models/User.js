@@ -1,12 +1,13 @@
-// models/User.js
-
+// models/UserGame.js
+const UserInfo = require("./UserInfo");
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-  email: { type: String, unique: true },
-  nickname: { type: String },
+  userInfo: { type: UserInfo },
+  compareWord: { type: String },
+  playCount: { type: Number },
   score: { type: Number },
-  point: { type: Number },
+  totalScore: { type: Number },
 });
 
 const User = mongoose.model("User", userSchema);

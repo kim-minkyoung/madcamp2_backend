@@ -1,6 +1,6 @@
 // controllers/userController.js
 
-const User = require("../models/User");
+const User = require("../models/UserInfo");
 
 exports.checkEmail = async (req, res) => {
   const email = req.body.email;
@@ -89,11 +89,10 @@ exports.updateProfile = async (req, res) => {
       updateData.nickname = nickname;
     }
 
-    const existingScore = user.score || 0;
     // 점수 필드를 요청으로 받은 경우 처리
     // 요청으로 들어온 점수를 기존 점수에 더함
     if (score !== undefined) {
-      updateData.score = existingScore + score;
+      updateData.score = score;
     }
 
     // 데이터베이스에서 사용자 업데이트
