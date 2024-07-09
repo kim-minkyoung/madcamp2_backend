@@ -62,8 +62,8 @@ exports.updateNickname = async (req, res) => {
     }
 
     const user = await User.findOneAndUpdate(
-      { userInfo: userId },
-      { $set: { "userInfo.nickname": nickname } },
+      { userInfo: userInfo.userid },
+      { $set: { "userInfo.nickname": userInfo.nickname } },
       { new: true, runValidators: true }
     );
 
