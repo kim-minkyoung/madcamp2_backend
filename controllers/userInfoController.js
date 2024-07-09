@@ -14,11 +14,13 @@ exports.checkEmail = async (req, res) => {
       const user = await UserInfo.findOne({ email });
       res.json({
         isExistingUser: true,
-        user: user,
+        userInfo: user,
       });
     } else {
-      const newUser = new User(req.body);
-      await newUser.save();
+      const newUserInfo = new UserInfo(req.body);
+      await newUserInfo.save();
+      const newUser = new User(newUserInfo);
+      await newUserInfo.save();
       res.json({ isExistingUser: false, user: newUser });
     }
   } catch (error) {
