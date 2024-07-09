@@ -1,4 +1,3 @@
-const UserInfo = require("../models/UserInfo");
 const User = require("../models/User");
 
 exports.checkEmail = async (req, res) => {
@@ -8,28 +7,21 @@ exports.checkEmail = async (req, res) => {
     const userExists = await checkUserExistence(email);
     if (userExists) {
       // 사용자 정보 가져오기
-      const userInfo = await UserInfo.findOne({ email }).populate("user");
+
+      const user = await User.findOne({ email });
       res.json({
         isExistingUser: true,
-        userInfo,
+        nickname: user.nickname,
+        _id: user._id,
       });
     } else {
-      // 새 UserInfo 생성 및 저장
-      const newUserInfo = new UserInfo(req.body);
-      await newUserInfo.save();
-
-      // 새 User 생성 및 저장
-      const newUser = new User({ userInfo: newUserInfo._id });
+      const newUser = new User(req.body);
       await newUser.save();
-
-      // 새 User를 userInfo 필드와 함께 반환
-      const populatedUser = await User.findById(newUser._id).populate(
-        "userInfo"
-      );
-      res.json({ isExistingUser: false, user: populatedUser });
+      res.json({ isExistingUser: false });
     }
   } catch (error) {
     console.error("Error checking user existence:", error);
+
     res.status(500).json({ error: "Error checking user existence" });
   }
 };
@@ -37,7 +29,7 @@ exports.checkEmail = async (req, res) => {
 // 이미 존재하는 이메일인지 확인하는 함수
 const checkUserExistence = async (email) => {
   try {
-    const user = await UserInfo.findOne({ email });
+    const user = await User.findOne({ email });
     return !!user; // 사용자가 존재하면 true, 그렇지 않으면 false 반환
   } catch (error) {
     console.error("데이터베이스 오류:", error);
@@ -55,28 +47,40 @@ exports.updateNickname = async (req, res) => {
     }
 
     // 데이터베이스에서 사용자 업데이트
-    const updatedUserInfo = await UserInfo.findByIdAndUpdate(
+    const updatedUser = await User.findByIdAndUpdate(
       userid,
-      { nickname },
+      { nickname: nickname },
       { new: true, runValidators: true }
     );
 
-    if (!updatedUserInfo) {
+    if (!updatedUser) {
       return res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
     }
 
-    // 관련된 User 문서 업데이트
-    const updatedUser = await User.findOneAndUpdate(
-      { userInfo: userid },
-      { $set: { userInfo: updatedUserInfo._id } },
-      { new: true, runValidators: true }
-    ).populate("userInfo");
-
-    // userInfo가 업데이트되면 관련 User도 업데이트 (후크를 통해 자동으로 이루어짐)
-    res.json({ userInfo: updatedUserInfo, user: updatedUser });
+    res.json(updatedUser);
   } catch (error) {
     console.error("프로필 업데이트 오류:", error);
     res.status(500).json({ error: "프로필 업데이트 중 오류가 발생했습니다." });
+  }
+};
+
+exports.getProfile = async (req, res) => {
+  try {
+    const userId = req.params.userid;
+    console.log(`Fetching user with ID: ${userId}`);
+
+    // 데이터베이스에서 사용자 정보 조회
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // 사용자 정보 반환
+    res.json(user);
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    res.status(500).json({ error: "Error fetching user" });
   }
 };
 
@@ -84,13 +88,11 @@ exports.deleteUser = async (req, res) => {
   const userid = req.params.userid;
 
   try {
-    const deletedUserInfo = await UserInfo.findByIdAndDelete(userid);
+    const deletedUser = await User.findByIdAndDelete(userid);
 
-    if (!deletedUserInfo) {
+    if (!deletedUser) {
       return res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
     }
-
-    await User.deleteMany({ userInfo: userid });
 
     res.json({ message: "사용자가 성공적으로 삭제되었습니다." });
   } catch (error) {

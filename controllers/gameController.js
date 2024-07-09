@@ -1,3 +1,5 @@
+// controllers/gameController.js
+
 var cron = require("node-cron");
 let currentGlobalWord = setRandomWord();
 
@@ -7,16 +9,6 @@ exports.getGlobalWord = (req, res) => {
   } catch (error) {
     console.error("글로벌 단어 제공 중 오류:", error);
     res.status(500).json({ error: "글로벌 단어 제공 중 오류가 발생했습니다." });
-  }
-};
-
-exports.getPersonalWord = (req, res) => {
-  try {
-    const personalWord = setRandomWord();
-    res.json({ word: personalWord });
-  } catch (error) {
-    console.error("개인 단어 제공 중 오류:", error);
-    res.status(500).json({ error: "개인 단어 제공 중 오류가 발생했습니다." });
   }
 };
 

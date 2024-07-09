@@ -1,33 +1,10 @@
-// controllers/userController.js
+// controllers/scoreController.js
 
 const User = require("../models/User");
 
-exports.getProfile = async (req, res) => {
-  try {
-    const userId = req.params.userid;
-    console.log(`Fetching user with ID: ${userId}`);
-
-    // 데이터베이스에서 사용자 정보 조회
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ error: "User not found" });
-    }
-
-    // 사용자 정보 반환
-    res.json(user);
-  } catch (error) {
-    console.error("Error fetching user:", error);
-    res.status(500).json({ error: "Error fetching user" });
-  }
-};
-
 exports.getUsersSortedByTotalScore = async (req, res) => {
   try {
-    // 모든 사용자 정보를 점수 내림차순으로 가져오기
     const users = await User.find().sort({ totalScore: -1 });
-
-    // 사용자 정보 반환
     res.json(users);
   } catch (error) {
     console.error("Error fetching users sorted by score:", error);
@@ -37,10 +14,7 @@ exports.getUsersSortedByTotalScore = async (req, res) => {
 
 exports.getUsersSortedByScore = async (req, res) => {
   try {
-    // 모든 사용자 정보를 점수 내림차순으로 가져오기
     const users = await User.find().sort({ score: -1 });
-
-    // 사용자 정보 반환
     res.json(users);
   } catch (error) {
     console.error("Error fetching users sorted by score:", error);
@@ -49,22 +23,22 @@ exports.getUsersSortedByScore = async (req, res) => {
 };
 
 exports.updateScore = async (req, res) => {
-  const { userid, score, playCount } = req.body;
+  const { userid } = req.params; // Use params to get userid from URL
+  const { score, playCount } = req.body;
 
   try {
-    // 사용자의 정보 조회
     let user = await User.findById(userid);
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // 점수와 playCount 업데이트
+    // Update score and playCount
     user.score = score;
     user.playCount = playCount;
 
-    // playCount가 2일 때 totalScore 업데이트
-    if (user.playCount === 2) {
+    // Update totalScore if playCount is 2
+    if (playCount === 2) {
       updateTotalScore(user, score);
     }
 
@@ -79,8 +53,8 @@ exports.updateScore = async (req, res) => {
   }
 };
 
-// 사용자의 totalScore를 업데이트하는 함수
-async function updateTotalScore(user, newScoore) {
+// Function to update totalScore
+async function updateTotalScore(user, newScore) {
   user.totalScore += newScore;
   await user.save();
 }

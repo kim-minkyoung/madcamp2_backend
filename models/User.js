@@ -1,9 +1,9 @@
 // models/User.js
-const UserInfo = require("./UserInfo");
 const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
-  userInfo: { type: mongoose.Schema.Types.ObjectId, ref: "UserInfo" },
+  email: { type: String, unique: true },
+  nickname: { type: String },
   compareWord: { type: String },
   playCount: { type: Number },
   score: { type: Number },
