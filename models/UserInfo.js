@@ -1,8 +1,7 @@
-// models/UserInfo.js
-
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const userInfoSchema = new mongoose.Schema({
+const userInfoSchema = new Schema({
   email: { type: String, unique: true },
   nickname: { type: String },
   // score: { type: Number },
