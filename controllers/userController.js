@@ -5,7 +5,7 @@ const User = require("../models/User");
 exports.getProfile = async (req, res) => {
   try {
     console.log("2");
-    const userId = req.params.userid;
+    const userId = req.params._id;
     console.log(`Fetching user with ID: ${userId}`);
 
     // 데이터베이스에서 사용자 정보 조회
