@@ -8,7 +8,7 @@ exports.checkEmail = async (req, res) => {
     const userExists = await checkUserExistence(email);
     if (userExists) {
       // 사용자 정보 가져오기
-      const userInfo = await UserInfo.findOne({ email });
+      const userInfo = await UserInfo.findOne({ email }).populate("user");
       res.json({
         isExistingUser: true,
         userInfo,
@@ -18,9 +18,9 @@ exports.checkEmail = async (req, res) => {
       const newUserInfo = new UserInfo(req.body);
       await newUserInfo.save();
 
-      // // 새 User 생성 및 저장
-      // const newUser = new User({ userInfo: newUserInfo._id });
-      // await newUser.save();
+      // 새 User 생성 및 저장
+      const newUser = new User({ userInfo: newUserInfo._id });
+      await newUser.save();
 
       // 새 User를 userInfo 필드와 함께 반환
       const populatedUser = await User.findById(newUser._id).populate(
