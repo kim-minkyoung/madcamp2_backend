@@ -40,9 +40,9 @@ exports.updateScore = async (req, res) => {
     // Update totalScore if playCount is 2
     if (playCount == 2) {
       updateTotalScore(user, score);
+    } else {
+      await user.save();
     }
-
-    await user.save();
 
     res.status(200).json({ message: "Score updated", user });
   } catch (err) {
