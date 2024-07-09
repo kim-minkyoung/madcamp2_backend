@@ -9,26 +9,20 @@ const userInfoSchema = new mongoose.Schema({
   // point: { type: Number },
 });
 
-// UserInfo가 저장된 후 관련 User 문서를 생성 또는 업데이트
+// 후크 등록
 userInfoSchema.post("save", async function (userInfo) {
   try {
-    // User 문서가 없을 때 생성, 있을 때 업데이트
-    const user = await User.findOneAndUpdate(
-      { userInfo: userInfo._id },
-      { userInfo: userInfo._id },
-      { upsert: true, new: true }
+    const User = mongoose.model("User"); // User 모델 불러오기
+    const users = await User.find({ userInfo: userInfo._id });
+
+    await Promise.all(
+      users.map(async (user) => {
+        user.userInfo = userInfo._id;
+        await user.save();
+      })
     );
   } catch (error) {
-    console.error("Error creating or updating user:", error);
-  }
-});
-
-// UserInfo가 삭제된 후 관련 User 문서를 삭제
-userInfoSchema.post("remove", async function (userInfo) {
-  try {
-    await User.deleteMany({ userInfo: userInfo._id });
-  } catch (error) {
-    console.error("Error deleting user:", error);
+    console.error("Error updating users:", error);
   }
 });
 
