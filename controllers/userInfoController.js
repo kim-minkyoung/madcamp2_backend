@@ -73,6 +73,7 @@ exports.deleteUser = async (req, res) => {
 
   try {
     const deletedUser = await UserInfo.findByIdAndDelete(userid);
+    await User.deleteMany({ userInfo: userInfo._id });
 
     if (!deletedUser) {
       return res.status(404).json({ error: "사용자를 찾을 수 없습니다." });
