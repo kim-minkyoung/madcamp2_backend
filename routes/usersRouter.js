@@ -10,6 +10,9 @@ router.post("/checkEmail", userController.checkEmail);
 // 사용자 정보 조회
 router.get("/:userid", userController.getProfile);
 
+// 모든 사용자 점수를 내림차순으로 가져오기
+router.get("/", userController.getAllUsersSortedByScore);
+
 // PUT profile
 router.put("/:userid", userController.updateProfile);
 

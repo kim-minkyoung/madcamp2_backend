@@ -1,20 +1,6 @@
 // controllers/userController.js
 
 const User = require("../models/User");
-const multer = require("multer");
-const path = require("path");
-
-// Multer 설정: 프로필 사진 업로드를 위한 설정
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, path.join(__dirname, "../public/uploads"));
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-
-const upload = multer({ storage: storage, limits: { fileSize: 7000000 } });
 
 exports.checkEmail = async (req, res) => {
   const email = req.body.email;
@@ -62,6 +48,19 @@ exports.getProfile = async (req, res) => {
   } catch (error) {
     console.error("Error fetching user:", error);
     res.status(500).json({ error: "Error fetching user" });
+  }
+};
+
+exports.getAllUsersSortedByScore = async (req, res) => {
+  try {
+    // 모든 사용자 정보를 점수 내림차순으로 가져오기
+    const users = await User.find().sort({ score: -1 });
+
+    // 사용자 정보 반환
+    res.json(users);
+  } catch (error) {
+    console.error("Error fetching users sorted by score:", error);
+    res.status(500).json({ error: "Error fetching users sorted by score" });
   }
 };
 
