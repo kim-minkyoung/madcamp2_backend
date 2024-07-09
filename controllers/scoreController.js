@@ -38,7 +38,7 @@ exports.updateScore = async (req, res) => {
     user.playCount = playCount;
 
     // Update totalScore if playCount is 2
-    if (playCount === 2) {
+    if (playCount == 2) {
       updateTotalScore(user, score);
     }
 
