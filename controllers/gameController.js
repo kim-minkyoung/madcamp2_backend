@@ -2,6 +2,7 @@
 
 var cron = require("node-cron");
 let currentGlobalWord = setRandomWord();
+const User = require("../models/User");
 
 exports.getGlobalWord = (req, res) => {
   try {
@@ -13,10 +14,25 @@ exports.getGlobalWord = (req, res) => {
 };
 
 // 매 시 정각 (0분)에 실행되도록 설정
-cron.schedule("0 * * * *", () => {
-  currentGlobalWord = setRandomWord();
-  console.log(`매 시 정각에 새로운 랜덤 단어: ${currentGlobalWord}`);
+cron.schedule("* * * * *", async () => {
+  try {
+    currentGlobalWord = setRandomWord();
+    console.log(`1분에 하나 새로운 랜덤 단어: ${currentGlobalWord}`);
+
+    await resetPlayCount();
+  } catch (error) {
+    console.error("Cron job 실행 중 오류:", error);
+  }
 });
+
+const resetPlayCount = async () => {
+  try {
+    await User.updateMany({}, { playCount: 0 });
+    console.log("모든 사용자의 playCount가 0으로 초기화되었습니다.");
+  } catch (error) {
+    console.error("playCount 초기화 중 오류:", error);
+  }
+};
 
 // 랜덤 단어 생성 함수
 function setRandomWord() {
