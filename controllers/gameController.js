@@ -27,7 +27,7 @@ cron.schedule("* * * * *", async () => {
 
 const resetPlayCount = async () => {
   try {
-    await User.updateMany({}, { playCount: 0 });
+    await User.updateMany({}, { playCount: 0, score: 0 });
     console.log("모든 사용자의 playCount가 0으로 초기화되었습니다.");
   } catch (error) {
     console.error("playCount 초기화 중 오류:", error);
