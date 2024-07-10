@@ -14,10 +14,10 @@ exports.getGlobalWord = (req, res) => {
 };
 
 // 매 시 정각 (0분)에 실행되도록 설정
-cron.schedule("*/2 * * * *", async () => {
+cron.schedule("0 * * * *", async () => {
   try {
     currentGlobalWord = setRandomWord();
-    console.log(`2분에 하나 새로운 랜덤 단어: ${currentGlobalWord}`);
+    console.log(`매 시 정각에 새로운 랜덤 단어: ${currentGlobalWord}`);
 
     await resetPlayCount();
   } catch (error) {
