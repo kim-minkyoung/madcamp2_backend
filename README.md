@@ -52,10 +52,29 @@ const userSchema = new mongoose.Schema({
 
 ## 기능별 앱 소개
 
+|로그인 화면|플레이 팁|내 프로필 보기|게임 플레이|랭킹|
+|------------|----------|---------------|-----------|----|
+| ![KakaoTalk_20240710_183407177](https://github.com/kim-minkyoung/madcamp2_frontend/assets/127263741/88e1d159-38e8-4a4d-82d9-211166d6fade) | ![KakaoTalk_20240710_183407177_05](https://github.com/kim-minkyoung/madcamp2_frontend/assets/127263741/941a4fc6-ca40-4af9-ba78-ae704ab45e6d) | ![KakaoTalk_20240710_183407177_02](https://github.com/kim-minkyoung/madcamp2_frontend/assets/127263741/1b77dce2-5154-4a22-ad99-b34c3b1d8643) | ![KakaoTalk_20240710_183407177_04](https://github.com/kim-minkyoung/madcamp2_frontend/assets/127263741/30ecbfc2-066c-462d-a0c9-a4e50a3b2c2e) | ![KakaoTalk_20240710_183407177_01](https://github.com/kim-minkyoung/madcamp2_frontend/assets/127263741/c7433cd6-e1b9-4e06-bdb6-99e30470ffbf) |
+
 ### 🎨 로그인
 
 - 구글 로그인 SDK를 이용: 로그인 내역이 없다면 자동으로 회원가입, 있다면 로그인
     - 가입 시 구글 계정 이름과 이메일을 가져와 사용
+ 
+### 🎨 플레이 팁
+
+- Drawdle에 대한 설명과 작동방식에 대한 설명을 Q&A 형식으로 확인 가능
+- 내용:
+    
+    `Q. Drawdle은 무엇인가요?`
+    
+    `A. Drawdle은 매 시간마다 업데이트되는 단어를 맞히는 게임입니다. 정확한 단어를 추측하여 당신의 그림 실력과 순발력을 테스트해보세요.`
+    
+    `Q. 한 시간에 두 번보다 많이 플레이할 수는 없나요?`
+    
+    `A. Drawdle은 매 시간마다 단어가 업데이트되지만, 각 단어 당 두 번의 기회를 줍니다.
+    우리는 하루에 24 번, 모든 참여자가 동일한 정답을 맞추는 게임 경험을 제공합니다.
+    정답 단어는 매 시각의 정각에 업데이트됩니다.`
 
 ### 🎨 내 프로필 보기
 
@@ -79,6 +98,7 @@ const userSchema = new mongoose.Schema({
 
 - 누적 점수 랭킹과 이번 단어 랭킹 조회 가능
 - 나의 랭킹은 하단에 따로 표시되며, 순위는 선택한 탭에 따라 연동되어 달라짐.
+
 
 ## 사용된 외부 API 목록
 
