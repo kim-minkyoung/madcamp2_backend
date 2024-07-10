@@ -14,10 +14,10 @@ exports.getGlobalWord = (req, res) => {
 };
 
 // 매 시 정각 (0분)에 실행되도록 설정
-cron.schedule("* * * * *", async () => {
+cron.schedule("*/2 * * * *", async () => {
   try {
     currentGlobalWord = setRandomWord();
-    console.log(`1분에 하나 새로운 랜덤 단어: ${currentGlobalWord}`);
+    console.log(`2분에 하나 새로운 랜덤 단어: ${currentGlobalWord}`);
 
     await resetPlayCount();
   } catch (error) {
@@ -28,7 +28,7 @@ cron.schedule("* * * * *", async () => {
 const resetPlayCount = async () => {
   try {
     await User.updateMany({}, { playCount: 0, score: 0 });
-    console.log("모든 사용자의 playCount가 0으로 초기화되었습니다.");
+    console.log("모든 사용자의 playCount, score가 0으로 초기화되었습니다.");
   } catch (error) {
     console.error("playCount 초기화 중 오류:", error);
   }
